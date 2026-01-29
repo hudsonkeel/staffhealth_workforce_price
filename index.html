@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StaffHealth Pricing Recommender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f5f7;
+      color: #222;
+    }
+
+    .header {
+      background: #111111;
+      color: #ffffff;
+      padding: 18px 14px 12px;
+      text-align: center;
+    }
+
+    .header-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-title-brand {
+      color: #1f66d1;
+      margin-right: 4px;
+    }
+
+    .header-subtitle {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #dddddd;
+      max-width: 880px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .banner {
+      background: #1f66d1;
+      color: #ffffff;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .page {
+      max-width: 1000px;
+      margin: 20px auto 40px;
+      padding: 0 16px 40px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-bottom: 16px;
+      max-width: 780px;
+      font-size: 0.9rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 16px 16px 18px;
+      border: 1px solid #e0e3eb;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .card p {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.86rem;
+      margin-bottom: 3px;
+    }
+
+    .field small {
+      color: #777;
+      font-size: 0.75rem;
+      margin-left: 6px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 6px 7px;
+      border-radius: 6px;
+      border: 1px solid #d0d4dc;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #0054a6;
+      box-shadow: 0 0 0 2px rgba(0,84,166,0.16);
+    }
+
+    .radio-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .radio-row label {
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d0d4dc;
+      background: #f8f9fb;
+    }
+
+    .radio-row input {
+      margin: 0;
+    }
+
+    .note {
+      font-size: 0.78rem;
+      color: #777;
+      margin-top: 6px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 720px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid #c9ccd8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: #f4f5fb;
+      color: #444;
+      margin-top: 4px;
+    }
+
+    .pill.base {
+      border-color: #1f66d1;
+      color: #1f66d1;
+      background: #e6f0ff;
+    }
+
+    .pill.core {
+      border-color: #2f9b5a;
+      color: #2f6b3c;
+      background: #e4f6e8;
+    }
+
+    .pill.enterprise {
+      border-color: #b12c1c;
+      color: #8a2215;
+      background: #fde8e5;
+    }
+
+    .big-number {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .big-number span {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #777;
+      margin-left: 6px;
+    }
+
+    .kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .kpi {
+      flex: 1 1 150px;
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      border: 1px solid #e0e3ea;
+    }
+
+    .kpi-label {
+      color: #666;
+      margin-bottom: 3px;
+    }
+
+    .kpi-value {
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: #222;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 6px 0;
+    }
+
+    ul li {
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-title">
+      <span class="header-title-brand">STAFFHEALTH</span>
+      PRICING RECOMMENDER
+    </div>
+    <div class="header-subtitle">
+      Uses SHSI + Workforce Stability outputs to recommend a tier and price based on volatility cost,
+      workforce drag, and stabilizable upside.
+    </div>
+  </div>
+  <div class="banner">
+    VALUE-BASED PRICING — NOT A RATE WAR
+  </div>
+
+  <div class="page">
+    <h1>Stability-Linked Pricing Calculator</h1>
+    <p class="subtitle">
+      Enter the <strong>Annual Volatility Cost</strong> from SHSI and the <strong>Workforce Drag Cost</strong> from WSI.
+      The model will estimate stabilizable upside and recommend a tier and price range based on our value framework.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>1. Inputs from SHSI / WSI</h3>
+        <p>Use modeled values from your Stability Index runs for this community or portfolio.</p>
+
+        <div class="field">
+          <label>
+            <span>Annual Volatility Cost (SHSI)</span>
+            <small>Extra cost from OT, PRN mix, call-offs, etc.</small>
+          </label>
+          <input type="number" id="volCost" min="0" step="1000" value="350000" />
+        </div>
+
+        <div class="field">
+          <label>
+            <span>Annual Workforce Drag Cost (WSI)</span>
+            <small>Vacancies, time-to-fill, recruiting spend, pipeline drag.</small>
+          </label>
+          <input type="number" id="dragCost" min="0" step="1000" value="250000" />
+        </div>
+
+        <div class="field">
+          <label>
+            <span>Confidence Level</span>
+            <small>How aggressive is the upside assumption?</small>
+          </label>
+          <div class="radio-row">
+            <label>
+              <input type="radio" name="confidence" value="conservative" checked />
+              Conservative
+            </label>
+            <label>
+              <input type="radio" name="confidence" value="standard" />
+              Standard
+            </label>
+            <label>
+              <input type="radio" name="confidence" value="aggressive" />
+              Aggressive
+            </label>
+          </div>
+        </div>
+
+        <p class="note">
+          Conservative uses lower stabilizable % and price share;
+          Aggressive assumes a higher stabilizable % and share.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>2. Model Assumptions</h3>
+        <p>These are the levers behind the recommendation.</p>
+        <ul>
+          <li>Total instability cost = volatility + workforce drag.</li>
+          <li>Stabilizable upside = 20–40% of that total.</li>
+          <li>Pricing = 8–18% of stabilizable upside.</li>
+          <li>Tier is based on upside band (Base / Core / Enterprise).</li>
+        </ul>
+        <p class="note">
+          You can tweak the % in the code later to align with PE / finance, but this gives a consistent
+          starting point anchored in the customer's data.
+        </p>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="card">
+        <h3>3. Instability & Stabilizable Upside</h3>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">Total Instability Cost (Volatility + Drag)</div>
+            <div class="kpi-value" id="totalInstability">$–</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Stabilizable Upside – Low (20%)</div>
+            <div class="kpi-value" id="upsideLow">$–</div>
+          </div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">Stabilizable Upside – Mid (30%)</div>
+            <div class="kpi-value" id="upsideMid">$–</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Stabilizable Upside – High (40%)</div>
+            <div class="kpi-value" id="upsideHigh">$–</div>
+          </div>
+        </div>
+        <p class="note">
+          These are directional ranges you can point to in conversation: “Even if we only stabilize 20–30% of this,
+          here’s what that means in dollars.”
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>4. Recommended Tier & Price</h3>
+        <div class="pill" id="tierPill">TIER – TBD</div>
+
+        <div class="big-number" id="suggestedAnnual">
+          $– <span>Suggested Annual Price</span>
+        </div>
+        <div class="big-number" id="suggestedMonthly" style="margin-top:6px;">
+          $– <span>Suggested Monthly Price</span>
+        </div>
+
+        <div class="kpi-row" style="margin-top:10px;">
+          <div class="kpi">
+            <div class="kpi-label">Annual Price Range</div>
+            <div class="kpi-value" id="annualRange">$–</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Monthly Price Range</div>
+            <div class="kpi-value" id="monthlyRange">$–</div>
+          </div>
+        </div>
+
+        <p class="note" id="tierExplanation">
+          Tier and pricing will appear here once you enter costs.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatCurrency(n) {
+      if (isNaN(n)) return "$–";
+      const abs = Math.abs(n);
+      const sign = n < 0 ? "-" : "";
+      return sign + "$" + abs.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function getConfidence() {
+      const checked = document.querySelector("input[name='confidence']:checked");
+      return checked ? checked.value : "conservative";
+    }
+
+    function updatePricing() {
+      const vol = Number(document.getElementById("volCost").value) || 0;
+      const drag = Number(document.getElementById("dragCost").value) || 0;
+      const totalInstability = vol + drag;
+
+      const totalInstEl = document.getElementById("totalInstability");
+      totalInstEl.textContent = formatCurrency(totalInstability);
+
+      // Upside bands
+      const upsideLow = totalInstability * 0.20;
+      const upsideMid = totalInstability * 0.30;
+      const upsideHigh = totalInstability * 0.40;
+
+      document.getElementById("upsideLow").textContent = formatCurrency(upsideLow);
+      document.getElementById("upsideMid").textContent = formatCurrency(upsideMid);
+      document.getElementById("upsideHigh").textContent = formatCurrency(upsideHigh);
+
+      if (totalInstability <= 0) {
+        // Reset if no data
+        document.getElementById("tierPill").textContent = "TIER – TBD";
+        document.getElementById("tierPill").className = "pill";
+        document.getElementById("suggestedAnnual").innerHTML = "$– <span>Suggested Annual Price</span>";
+        document.getElementById("suggestedMonthly").innerHTML = "$– <span>Suggested Monthly Price</span>";
+        document.getElementById("annualRange").textContent = "$–";
+        document.getElementById("monthlyRange").textContent = "$–";
+        document.getElementById("tierExplanation").textContent =
+          "Tier and pricing will appear here once you enter volatility and drag costs.";
+        return;
+      }
+
+      // Decide tier based on mid-upside
+      let tier = "Base";
+      let tierClass = "pill base";
+      let explanation = "";
+      if (upsideMid < 200000) {
+        tier = "Base Stability Monitor";
+        tierClass = "pill base";
+        explanation = "Base tier: good for relatively stable communities with moderate upside.";
+      } else if (upsideMid < 450000) {
+        tier = "Core Stability Program";
+        tierClass = "pill core";
+        explanation = "Core tier: best fit for typical portfolios with meaningful upside to capture.";
+      } else {
+        tier = "Enterprise Stability Partnership";
+        tierClass = "pill enterprise";
+        explanation = "Enterprise tier: high upside and higher volatility/pipeline risk justify a deeper program.";
+      }
+
+      const tierPill = document.getElementById("tierPill");
+      tierPill.textContent = tier.toUpperCase();
+      tierPill.className = tierClass;
+
+      const confidence = getConfidence();
+
+      // Pricing share of upside based on confidence
+      let shareLow = 0.08;
+      let shareHigh = 0.12;
+      let shareSuggested = 0.10; // mid-point
+
+      if (confidence === "standard") {
+        shareLow = 0.10;
+        shareHigh = 0.15;
+        shareSuggested = 0.12;
+      } else if (confidence === "aggressive") {
+        shareLow = 0.12;
+        shareHigh = 0.18;
+        shareSuggested = 0.15;
+      }
+
+      // Use mid-upside as baseline for pricing
+      const baseUpside = upsideMid || totalInstability * 0.30;
+
+      const annualLow = baseUpside * shareLow;
+      const annualHigh = baseUpside * shareHigh;
+      const annualSuggested = baseUpside * shareSuggested;
+
+      const monthlyLow = annualLow / 12;
+      const monthlyHigh = annualHigh / 12;
+      const monthlySuggested = annualSuggested / 12;
+
+      document.getElementById("suggestedAnnual").innerHTML =
+        formatCurrency(annualSuggested) + ' <span>Suggested Annual Price</span>';
+      document.getElementById("suggestedMonthly").innerHTML =
+        formatCurrency(monthlySuggested) + ' <span>Suggested Monthly Price</span>';
+
+      document.getElementById("annualRange").textContent =
+        formatCurrency(annualLow) + " – " + formatCurrency(annualHigh);
+      document.getElementById("monthlyRange").textContent =
+        formatCurrency(monthlyLow) + " – " + formatCurrency(monthlyHigh);
+
+      document.getElementById("tierExplanation").textContent = explanation +
+        " This is based on " + formatCurrency(baseUpside) +
+        " in stabilizable upside and a " +
+        Math.round(shareSuggested * 100) + "% share assumption.";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("volCost").addEventListener("input", updatePricing);
+      document.getElementById("dragCost").addEventListener("input", updatePricing);
+
+      const radios = document.querySelectorAll("input[name='confidence']");
+      radios.forEach(r => r.addEventListener("change", updatePricing));
+
+      updatePricing();
+    });
+  </script>
+</body>
+</html>
